@@ -608,10 +608,10 @@ No:
 
 #### Only export a single react class.
 
-Every .jsx file should export a single React class, and nothing else.
-This is for testability; the fixture framework requires it to function.
+Every .jsx file should export a single React class, and nothing else. This is for testability; the fixture framework requires it to function.
 Note that the file can still define multiple classes, it just can't export
 more than one.
+
 ---------------------
 
 ### Consider Type-checking with [Flow](https://flow.org/) over PropTypes
