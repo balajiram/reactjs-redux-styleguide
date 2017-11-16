@@ -614,7 +614,9 @@ more than one.
 
 ---------------------
 
-### Consider Type-checking with [Flow](https://flow.org/) over PropTypes
+#### Type-checking
+
+Consider Type-checking with [Flow](https://flow.org/) over PropTypes
 
 Flow is a type-checker that runs at compile-time to catch issues
 and prevent bugs. It should be used on all new components.
