@@ -23,13 +23,16 @@ preferably with links to other sources. I change my mind often (for the better),
 
 ## Table of Contents
 
-- [ES6 and beyond](#es6-and-beyond)
+- [Javascript/ES6](#javascript-or-es6)
   - [Variables: var, let and const](#variables-var-let-and-const)
   - [Variables: declaration and usage](#variables-naming-declaration-and-usage)
   - [Naming: files and variables](#naming-files-and-variables)
+  - [Imports](#imports)
+  - [Spacing and Line length](#spacing-and-line-length)
+  - [Commenting and documentation](#commenting-and-documentation)
+  - [Core language rules](#core-language-rules)
   - [Arrow functions](#arrow-functions)
   - [Pure functions](#pure-functions)
-  - [Classes](#classes)
 - [React](#react)
   - [Components and containers](#components-and-containers)
   - [Dealing with props](#dealing-with-props)
@@ -40,7 +43,7 @@ preferably with links to other sources. I change my mind often (for the better),
 - [Services](#services)
 - [Utils](#utils)
 
-## ES6 and beyond
+## Javascript / ES6
 
 Developers which have recently discovered the power of ES6 often feel compelled to use them on every occasion. This is
 very good because it keeps us upstream with the community and also at the same time it can quickly lead to unreadable code.
@@ -96,7 +99,7 @@ However, `let` and `const` are not hoisted. Therefore there is no reason to decl
 where you are going to use them. This makes the code easier to follow. You won't have to go looking for usages before they are defined, because they can't be used there. 
 It also makes it easier to extract a bunch of statements into a function, which is a great way to improve readability even more.
 
-###Naming: files and variables
+### Naming: files and variables
 
 
 ```js
@@ -109,12 +112,211 @@ propertyNamesLikeThis
 SYMBOLIC_CONSTANTS_LIKE_THIS
 ```
 
+### Imports
+Use ES6 imports `import foo from 'foo'`. 
+use CommonJS imports if the ES6 import isn't supported by the library and use-cases like dynamically fetching image assests inside the code
+`Grouping` There should be 3 clusters of imports: third-party (aka vendor) libraries, first-party libraries, and local imports.
+React/Redux is "Third party" because we didn't write it. Astro is "First party" because it lives their own repository.
+
+```js
+import React, {Component} from "react";
+import {connect} from redux;
+
+import {Button, CheckBox} from "Astro";
+
+import Util from "../common/util.js";
+import mainThing, {
+    firstOtherThing,
+    secondOtherThing,
+    thirdOtherThing,
+} from '../somewhere';
+```
+
+### Spacing and Line length
+Don't insert extra spaces between parens, brackets, or braces.
+
+Yes:
+```js
+// Literals:
+const fancyPants = pants.map((pant) => ({...pant, isFancy: true}));
+const toCartesian = (r, theta) => [r * cos(theta), r * sin(theta)];
+
+// Destructuring:
+const {StyleSheet, css} = valueObject;
+const [x, y] = coordinates;
+
+
+// Template strings:
+const mission = `A ${price}, ${quality} education for ${clientele}.`;
+
+// Parens:
+if ((a === b) || (b === c)) {...}
+```
+
+No:
+```js
+// Literals:
+const fancyPants = pants.map((pant) => ({ ...pant, isFancy: true }));
+const toCartesian = (r, theta) => [ r * cos(theta), r * sin(theta) ];
+
+// Destructuring:
+const { StyleSheet, css } = require('aphrodite');
+const [ x, y ] = coordinates;
+
+// Template strings:
+const mission = `A ${ price }, ${ quality } education for ${ clientele }.`;
+
+// Parens:
+if ( ( a === b ) || ( b === c ) ) {...}
+```
+
+##### Line length
+Lines should not exceed 79 characters. (This is called the "80 character rule," leaving 1 character for the newline.)
+This is consistent with our other language(python,...) style guide.
+
+### Comments and documentation
+
+#### Inline Comments
+Inline style comments should be of the `//` variety, not the `/* */` variety.
+
+#### Top level file and class comments
+All files and classes should have JSDoc comments. JSDoc can be parsed by a number of open source tools, and must be well-formed.
+Syntax:
+```js
+/**
+ * A JSDoc comment should begin with a slash and 2 asterisks.
+ */
+```
+Top-level (top-of-file) comments are designed to orient readers unfamiliar with the code to what is in this file and any other disclaimers clients of the code should be given. It should provide a description of the file's contents and any dependencies or compatibility information. As an example:
+
+/**
+ * Various utility functions to handle manage the commonly used functions across
+ * the application.
+ *
+ * These utilities were written to be a general purpose utility
+ * for the entire code base.
+ */
+ 
+ Class comments should be used for every class, and give a description along with appropriate type tags (see "Methods and properties" comments for more information on types on the constructor).
+ 
+ ```js
+ /**
+ * Class making something fun and easy.
+ *
+ * @param {string} arg1 An argument that makes this more interesting.
+ * @param {Array.<number>} arg2 List of numbers to be processed.
+ */
+function SomeFunClass(arg1, arg2) {
+  // ...
+}
+ ```
+ 
+ #### Methods and properties comments
+ All non-trivial methods and properties should also have JSDoc comments.
+
+Type annotations are strongly encouraged; if there is even a slight chance that the type will be ambiguous to future readers, put in a type annotation.
+
+Type annotations are based on the ES4/JS2 type system, and are documented in the [Google JavaScript style guide](https://google.github.io/styleguide/javascriptguide.xml).
+
+`@param` and `@return` type annotations that have comments that do not fit on one line wrap to the next line and indent 4 spaces.
+
+/**
+ * A UI component allows users to select badges from their full list
+ * of earned badges, displaying them in a container.
+ * Expects a Badges.BadgeList as a model.
+ */
+```js 
+Class FeedTable extends Component{
+    /**
+     * Whether or not this is currently in edit mode
+     */
+    editable: false,
+
+    /**
+     * The feed list to show in table .
+     * @type {{id: number, name: string}}
+     */
+    data: null,
+
+    /**
+     * @param {rowIdx: number}.
+     * @return 
+     */
+    edit(rowIdx){
+    …
+    },
+   ...
+};
+```
+#### Note:
+Don't over comment and avoid commenting by having self-explanatory names for the variables and methods. Avoid inline comments for methods, commenting only in method header is a good practice.
+
+### Core language rules
+
+#### Equality:
+
+Prefer `===` (strict equality) to `==` due to the [numerous oddities
+related to JavaScript's type coercion](https://javascriptweblog.wordpress.com/2011/02/07/truth-equality-and-javascript/).
+
+The only valid use of `==` is for comparing against null and undefined
+at the same time:
+
+```js
+// Check null and undefined, but distinguish between other falsey values
+if (someVariable == null) {
+```
+
+#### Array and Object literals
+
+Always use `[]` and `{}` style literals to initialize arrays and
+objects, not the `Array` and `Object` constructors.
+
+Array constructors are error-prone due to their arguments: `new
+Array(3)` yields `[undefined, undefined, undefined]`, not `[3]`.
+
+To avoid these kinds of weird cases, always use the more readable
+array literal.
+
+Object constructors don't have the same problems, but follow the same
+rule for consistency with arrays.  Plus, `{}` is more readable.
+
+In some cases, we do not yet allow a new language feature, if it's
+expensive to polyfill.  In others, we require using the newer language
+feature and avoiding the old:
+
+#### Utility methods
+
+| Construct | Use...                                | ...instead of |
+| --------- | ------------------------------------- | ---------------------- |
+| copy objects | use clone methods of `ramda`/`underscore`/... libraries | `JSON.parse(JSON.stringify(...))/Object.assign({}...)` |
+| backticks | `` `http://${host}/${path}` `` | `"http://" + host + "/" + path` |
+| destructuring | `var {x, y} = a;` | `var x = a.x; var y = a.y;` |
+| fat arrow | `foo(() => {...})` | `foo(function() {...}.bind(this))` |
+| let/const | `let a = 1; const b = "4EVAH"; a++;` | `var a = 1; var b = "4EVAH"; a++;` |
+| includes | `array.includes(item)` | `array.indexOf(item) !== -1` |
+| map/forEach/reduce/filter | `list.forEach() / list.map` | `for(var i=0,i<lidt.length:i++){...}` |
+| for/of | `for (const [key, value] of Object.entries(obj)) {...}` | `_.each(obj, function(value, key) {...})` |
+| spread | `{...a, ...b, c: d}` | `_.extend({}, a, b, {c: d})` |
+| rest params | `function(bar, ...args) {foo(...args);}` | `function(bar) {var args = Array.prototype.slice.call(arguments, 1); foo.apply(null, args);}` |
+
+#### Use `=>` instead of `bind(this)`
+
+Arrow functions are easier to read (and with Babel, more efficient)
+than calling `bind` manually.
+
+#### Use rest params instead of `arguments`
+
+The magic `arguments` variable has some odd quirks. It's simpler to
+use rest params like `(...args) => foo(args)`.
+
+#### Use backticks for string interpolation
+
+`+` is not forbidden, but backticks are encouraged!
 
 ### Arrow functions
 
 - Consider anonymous functions deprecated. We have arrow functions for that now.
 - Use arrow functions only as part of a larger (named) entity, not as a stand-alone entity.
-- Declare functions after using them by leveraging function hoisting.
 
 ```js
 // deprecated
@@ -138,34 +340,6 @@ With the addition of the arrow function syntax, we have gained a very elegant an
 functions. Because they use 'lexical this', usage of `this` is more predictable. Therefore you should use arrows instead
 of regular anonymous functions.
 
-Unfortunately, it's tempting to forgo regular functions entirely and switch to arrows completely. Developers seem to
-think that with arrows, they never have to write that pesky `function` keyword again. However, a fully fledged function
-definition still has its merits. Arrow functions have various benefits, but also two major drawbacks: they are anonymous
-and they don't stand out in the code.
-
-The most important thing when writing readable code is to name things. Naming your functions is the best way to document
-what your code does. A well named function relieves the burden of having to read and comprehend the actual code. Another
-drawback of anonymous functions is that they don't encourage reuse. With arrows it's too easy to write a new function
-for each use case rather then reuse more generic functions. Finally, anonymous functions commonly aren't exported, which
-makes them hard to unit test.
-
-That being said, arrow functions certainly have their place. They are incredibly convenient as callback functions and
-when combined with array methods (map, reduce, forEach, filter, etc.) or other functional constructs they make for very
-elegant code. In the end it's up to you to find the right balance between elegance and documentation. Whenever you've
-written an arrow function, take a step back and consider if using a named function instead would improve readability.
-
-Like the Angular Style Guide we recommend the use of [function hoisting] in order to put your primary code at the top
-and implementation details at the bottom. Such code is much easier to read because it's in chronologic order and focuses
-on the bigger picture. If you've ever implemented this rule from the Angular Style Guide, you know this will let you
-grok the contents of a file much faster.
-
-You can of course assign your arrow function to a variable in order to 'name' it. Feel free to choose this approach if
-it fits your coding style, but consider your less functional-oriented colleagues. However, this makes regular variables
-and functions look extremely similar, making it harder to tell them apart. You will also lose the benefits of function
-hoisting. However there are also use cases where this style makes more sense, particularly if the function is a
-one-liner. Using a named function here would require at least three lines of code.
-
-[function hoisting]: https://github.com/johnpapa/angular-styleguide#function-declarations-to-hide-implementation-details
 
 ### Pure functions
 
@@ -203,24 +377,6 @@ side effects. That means they cannot access outside scope and they cannot mutate
 
 [pure]: https://en.wikipedia.org/wiki/Pure_function
 
-### Classes
-
-- Only use classes if you have a very good reason for it.
-- Prefer composition over inheritance ("foo HAS a bar" instead of "foo IS a bar").
-- Never inherit more than one level deep.
-- Never use `instanceof` checks, use duck typing instead.
-
-Classes have always been a hot topic of discussion in the JavaScript world. ES6 has introduced a new way to define
-classes, even though there is a growing tendency to avoid them. Programmers coming from an OOP background will
-appreciate them while the more functionally inclined don't like them. Developers working with React and Redux mostly
-prefer the functional approach, which is why using classes is discouraged. Downsides include:
-
-- Classes encourage mutation because they contain state.
-- Classes encourage coupling because they are used as contracts.
-- Classes encourage inheritance, but we want composition.
-- Instances can't be easily cloned without losing their type, making it hard to write pure functions.
-- Instance methods can't really be pure, it wouldn't make sense.
-- Properties are never really private.
 
 ## React
 
