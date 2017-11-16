@@ -391,9 +391,12 @@ The new way to write components uses a function instead of a class. Components d
 will receive their props as an argument and must return the rendered component. It basically boils down to having only a
 render method, which receives the props as an argument rather than accessing it as a class property. They also receive
 context as a second argument.
+Container components have application logic, but do not emit HTML themselves, will return HTML through dump components.
 
 [dump vs smart components]: https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0
 [fsc]: https://facebook.github.io/react/blog/2015/10/07/react-v0.14.html#stateless-functional-components
+
+Prefer [props to state](http://facebook.github.io/react/docs/interactivity-and-dynamic-uis.html#what-components-should-have-state). You almost always want to use props. By avoiding state when possible, you minimize redundancy, making it easier to reason about your application.
 
 - Separate 'components'(dump) from 'containers'(smart).
 - Prefer using a function for dump-components(shouldn't have state), a class for containers.
@@ -416,10 +419,14 @@ export default class TodoList extends React.Component {
   }
 }
 ```
-###
-### Syntax
 
-#### Use ES2015 classes.
+#### *Never* store state in the DOM.
+
+Do not use `data-` attributes or classes. All information
+should be stored in JavaScript, either in the React component itself,
+or in a React store if using a framework such as Redux.
+
+### Component Syntax
 
 1. Use static properties for `defaultProps`.
 2. Use an instance property for `state`.
@@ -464,15 +471,6 @@ export default class TodoList extends React.Component {
    ES6 style classes do not support mixins.  See the [mixins considered harmful](https://facebook.github.io/react/blog/2016/07/13/mixins-considered-harmful.html)
    blog post for details of how to convert mixins to higher order components.
 
-**Codemods**
-
-Converting legacy components to use ES2015 classes? There's a codemod for that.
-
-Convert one or more files with the following command:
-
-```bash
-$ tools/react-codemod.js class path/to/file path/to/other/file
-```
 
 #### Component method and property ordering
 
@@ -518,6 +516,19 @@ class Foo extends Component {
     // Finally, the render method
     render() { ... }
 }
+```
+
+
+### Dealing with props
+
+- Start your render method with a destructuring assignment on props and/or context.
+- Use the spread operator to assign multiple attributes in one go.
+
+```js
+const { label, completed } = this.props;
+const { onTodoClick } = this.context;
+
+return <TodoItem {...{ label, completed, onTodoClick }} />
 ```
 
 #### Name handlers `handleEventName`.
@@ -598,55 +609,12 @@ No:
 #### Only export a single react class.
 
 Every .jsx file should export a single React class, and nothing else.
-This is for testability; the fixture framework requires it to
-function.
-
+This is for testability; the fixture framework requires it to function.
 Note that the file can still define multiple classes, it just can't export
 more than one.
-
 ---------------------
 
-### Language features
-
-#### Make "presentation" components pure.
-
-It's useful to think of the React world as divided into ["logic"
-components and "presentation" components](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0).
-
-"Logic" components have application logic, but do not emit HTML
-themselves.
-
-"Presentation" components are typically reusable, and do emit HTML.
-
-Logic components can have internal state, but presentation components
-never should.
-
-#### Prefer [props to state](http://facebook.github.io/react/docs/interactivity-and-dynamic-uis.html#what-components-should-have-state).
-
-You almost always want to use props. By avoiding state when possible,
-you minimize redundancy, making it easier to reason about your
-application.
-
-A common pattern — which matches the "logic" vs. "presentation"
-component distinction — is to create several stateless components
-that just render data, and have a stateful component above them in the
-hierarchy that passes its state to its children via props. The
-stateful component encapsulates all of the interaction logic, while
-the stateless components take care of rendering data in a declarative
-way.
-
-Copying data from props to state can cause the UI to get out of sync
-and is especially bad.
-
-#### *Never* store state in the DOM.
-
-Do not use `data-` attributes or classes. All information
-should be stored in JavaScript, either in the React component itself,
-or in a React store if using a framework such as Redux.
-
-----------------------------------
-
-### Type-checking with [Flow](https://flow.org/)
+### Consider Type-checking with [Flow](https://flow.org/) over PropTypes
 
 Flow is a type-checker that runs at compile-time to catch issues
 and prevent bugs. It should be used on all new components.
@@ -654,12 +622,7 @@ and prevent bugs. It should be used on all new components.
 For more information on how we use Flow, check the [Javascript
 style guide](https://github.com/Khan/style-guides/blob/master/style/javascript.md#flow-rules)
 
-#### Use Flow instead of PropTypes
-
-Props can now be validated with Flow instead of React's PropTypes.
-Flow provides a much more expressive way to set types for props,
-with the additional benefits of being able to annotate state (and
-any additional methods or data).
+Props can now be validated with Flow instead of React's PropTypes.Flow provides a much more expressive way to set types for props,with the additional benefits of being able to annotate state (and any additional methods or data).
 
 Types can be defined on the class itself:
 
@@ -711,19 +674,6 @@ children: React$Element<any> | Array<React$Element<any>>
 
 Note that this is only the most common use-case for children.
 Children can also be other types (like a string, or a function).
-
-
-### Dealing with props
-
-- Start your render method with a destructuring assignment on props and/or context.
-- Use the spread operator to assign multiple attributes in one go.
-
-```js
-const { label, completed } = this.props;
-const { onTodoClick } = this.context;
-
-return <TodoItem {...{ label, completed, onTodoClick }} />
-```
 
 ## Redux
 
