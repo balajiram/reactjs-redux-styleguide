@@ -23,7 +23,7 @@ preferably with links to other sources. I change my mind often (for the better),
 
 ## Table of Contents
 
-- [Javascript/ES6](#javascript-or-es6)
+- [Javascript / ES6](#javascript-or-es6)
   - [Variables: var, let and const](#variables-var-let-and-const)
   - [Variables: declaration and usage](#variables-naming-declaration-and-usage)
   - [Naming: files and variables](#naming-files-and-variables)
@@ -188,7 +188,7 @@ Syntax:
  */
 ```
 Top-level (top-of-file) comments are designed to orient readers unfamiliar with the code to what is in this file and any other disclaimers clients of the code should be given. It should provide a description of the file's contents and any dependencies or compatibility information. As an example:
-
+```js
 /**
  * Various utility functions to handle manage the commonly used functions across
  * the application.
@@ -196,7 +196,7 @@ Top-level (top-of-file) comments are designed to orient readers unfamiliar with 
  * These utilities were written to be a general purpose utility
  * for the entire code base.
  */
- 
+ ```
  Class comments should be used for every class, and give a description along with appropriate type tags (see "Methods and properties" comments for more information on types on the constructor).
  
  ```js
@@ -315,8 +315,8 @@ use rest params like `(...args) => foo(args)`.
 
 ### Arrow functions
 
-- Consider anonymous functions deprecated. We have arrow functions for that now.
-- Use arrow functions only as part of a larger (named) entity, not as a stand-alone entity.
+- Consider anonymous functions deprecated. We have arrow functions for that now. With the addition of the arrow function syntax, we have gained a very elegant and convenient way to define anonymous functions. Because they use 'lexical this', usage of `this` is more predictable. Therefore we should consider arrow functions instead of regular anonymous functions.
+- Arrow functions don’t replace regular functions. You can't use an arrow function when a dynamic context is required: defining methods, create objects with constructors, get the target from `this` when handling events for more detail on [this](https://dmitripavlutin.com/when-not-to-use-arrow-functions-in-javascript/).
 
 ```js
 // deprecated
@@ -335,11 +335,6 @@ string => string.toLocaleUpperCase()
 // if it fits your style
 const upper = string => string.toLocaleUpperCase()
 ```
-
-With the addition of the arrow function syntax, we have gained a very elegant and convenient way to define anonymous
-functions. Because they use 'lexical this', usage of `this` is more predictable. Therefore you should use arrows instead
-of regular anonymous functions.
-
 
 ### Pure functions
 
@@ -382,10 +377,26 @@ side effects. That means they cannot access outside scope and they cannot mutate
 
 ### Components and containers
 
-- Separate 'components' from 'containers'.
-- Prefer using a function for components, a class for containers.
+React components come in two flavors: presentation components and container components, also known as [dumb vs smart
+components]. We simply refer to them as 'components' and 'containers'.
+
+React v0.14 introduced a new way to write components. In the past we would write every component as a class. However,
+since presentation components are very lightweight, they don't need all the power that a class provides (i.e. lifecycle
+methods and state).
+
+The new way to write components uses a function instead of a class. Components defined that way are known as
+'[functional stateless components][fsc]' because they cannot have any state and they are pure functions. This means they
+will receive their props as an argument and must return the rendered component. It basically boils down to having only a
+render method, which receives the props as an argument rather than accessing it as a class property. They also receive
+context as a second argument.
+
+[dump vs smart components]: https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0
+[fsc]: https://facebook.github.io/react/blog/2015/10/07/react-v0.14.html#stateless-functional-components
+
+- Separate 'components'(dump) from 'containers'(smart).
+- Prefer using a function for dump-components(shouldn't have state), a class for containers.
 - Use PascalCase for component names.
-- Put each component in its own directory, inside index.js.
+- Put each component in its own directory and component file and style should be same name as directory name.
 - Expose components as the default export.
 - Expose secondary functions as named exports for unit testing.
 - Never export anonymous (arrow) functions.
@@ -403,26 +414,6 @@ export default class TodoList extends React.Component {
   }
 }
 ```
-
-React components come in two flavors: presentation components and container components, also known as [dumb vs smart
-components]. We simply refer to them as 'components' and 'containers'.
-
-React v0.14 introduced a new way to write components. In the past we would write every component as a class. However,
-since presentation components are very lightweight, they don't need all the power that a class provides (i.e. lifecycle
-methods and state).
-
-The new way to write components uses a function instead of a class. Components defined that way are known as
-'[functional stateless components][fsc]' because they cannot have any state and they are pure functions. This means they
-will receive their props as an argument and must return the rendered component. It basically boils down to having only a
-render method, which receives the props as an argument rather than accessing it as a class property. They also receive
-context as a second argument.
-
-Each component or container should be inside its own directory. This reduces the clutter when components use CSS and
-other related files. By using `index.js` you won't have to change any import statements when you migrate from a file to
-a folder with the same name. If you import a folder, `index.js` is inferred.
-
-[dump vs smart components]: https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0
-[fsc]: https://facebook.github.io/react/blog/2015/10/07/react-v0.14.html#stateless-functional-components
 
 ### Dealing with props
 
