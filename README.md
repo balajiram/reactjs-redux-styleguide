@@ -40,7 +40,11 @@ preferably with links to other sources. I change my mind often (for the better),
   - [Props](#props)
   - [Event handlers](#event-handlers)
   - [Ref](#ref)
-  - [Tips](#tips)
+  - [Anti-patterns](#anti-patterns)
+    - [State in the DOM](#state-in-the-DOM)
+    - [Iteration](#iteration)
+    - [Multiple exports](#multiple-exports)
+    - [isMounted] (#is-mounted)
   - [Type checking](#type-checking)
 - [Redux](#redux)
   - [Action creators](#action-creators)
@@ -424,12 +428,6 @@ export default class TodoList extends React.Component {
 }
 ```
 
-#### *Never* store state in the DOM.
-
-Do not use `data-` attributes or classes. All information
-should be stored in JavaScript, either in the React component itself,
-or in a React store if using a framework such as Redux.
-
 ### Syntax rules
 
 1. Use static properties for `defaultProps`.
@@ -693,7 +691,12 @@ Always use ref callbacks. eslint: [`react/no-string-refs`](https://github.com/ya
     />
     ```
  
-### Tips
+### Anti-patterns
+
+#### state in the DOM.
+
+###### *Never* store state in the DOM
+Do not use `data-` attributes or classes. All information should be stored in JavaScript, either in the React component itself,or in a React store if using a framework such as Redux.
 
 #### iteration
 - Avoid using an array index as `key` prop, prefer a unique ID. ([why?](https://medium.com/@robinpokorny/index-as-a-key-is-an-anti-pattern-e0349aece318))
@@ -716,11 +719,11 @@ Always use ref callbacks. eslint: [`react/no-string-refs`](https://github.com/ya
   ))}
   ```
 
-#### Only export a single react class.
+#### Multiple exports
 
-Every .jsx file should export a single React class, and nothing else. This is for testability; the fixture framework requires it to function.
-Note that the file can still define multiple classes, it just can't export
-more than one.
+Every .jsx file should export a single React class, and nothing else. 
+
+Note that the file can still define multiple classes, it just can't export more than one.
 
 
 #### `isMounted`
