@@ -34,7 +34,7 @@ preferably with links to other sources. I change my mind often (for the better),
   - [Arrow functions](#arrow-functions)
   - [Pure functions](#pure-functions)
 - [React](#react)
-  - [Components vs Containers](#components-and-containers)
+  - [Components vs Containers](#components-vs-containers)
   - [Syntax rules](#syntax-rules)
   - [Method ordering](#method-ordering)
   - [Props](#props)
@@ -693,7 +693,7 @@ Always use ref callbacks. eslint: [`react/no-string-refs`](https://github.com/ya
     />
     ```
  
-### Disciplines
+### Tips
 
 #### iteration
 - Avoid using an array index as `key` prop, prefer a unique ID. ([why?](https://medium.com/@robinpokorny/index-as-a-key-is-an-anti-pattern-e0349aece318))
