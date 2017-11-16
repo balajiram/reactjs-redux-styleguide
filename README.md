@@ -34,8 +34,14 @@ preferably with links to other sources. I change my mind often (for the better),
   - [Arrow functions](#arrow-functions)
   - [Pure functions](#pure-functions)
 - [React](#react)
-  - [Components and containers](#components-and-containers)
-  - [Dealing with props](#dealing-with-props)
+  - [Components vs Containers](#components-and-containers)
+  - [Syntax rules](#syntax-rules)
+  - [Method ordering](#method-ordering)
+  - [Props](#props)
+  - [Event handlers](#event-handlers)
+  - [Ref](#ref)
+  - [Tips](#tips)
+  - [Type checking](#type-checking)
 - [Redux](#redux)
   - [Action creators](#action-creators)
   - [Reducers](#reducers)
@@ -377,7 +383,7 @@ side effects. That means they cannot access outside scope and they cannot mutate
 
 For [React best practices](https://docs.google.com/document/d/1ChtFUao18IyNhaXZ5sE2W-CFuFcYnqlFTyi5gfe6XV0/edit).
 
-### Components and containers
+### Components vs Containers
 
 React components come in two flavors: presentation components and container components, also known as [dumb vs smart
 components]. We simply refer to them as 'components' and 'containers'.
@@ -395,8 +401,6 @@ Container components have application logic, but do not emit HTML themselves, wi
 
 [dump vs smart components]: https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0
 [fsc]: https://facebook.github.io/react/blog/2015/10/07/react-v0.14.html#stateless-functional-components
-
-Prefer [props to state](http://facebook.github.io/react/docs/interactivity-and-dynamic-uis.html#what-components-should-have-state). You almost always want to use props. By avoiding state when possible, you minimize redundancy, making it easier to reason about your application.
 
 - Separate 'components'(dump) from 'containers'(smart).
 - Prefer using a function for dump-components(shouldn't have state), a class for containers.
@@ -426,7 +430,7 @@ Do not use `data-` attributes or classes. All information
 should be stored in JavaScript, either in the React component itself,
 or in a React store if using a framework such as Redux.
 
-### Component Syntax rules
+### Syntax rules
 
 1. Use static properties for `defaultProps`.
 2. Use an instance property for `state`.
@@ -467,16 +471,92 @@ or in a React store if using a framework such as Redux.
     }
     ```
 
+6. Open elements on the same line.
+
+The 80-character line limit is a bit tight, so we opt to conserve the extra 4.
+Yes:
+```jsx
+return <div>
+   ...
+</div>;
+```
+
+No:
+```jsx
+return (      // "div" is not on the same line as "return"
+    <div>
+        ...
+    </div>
+);
+```
+
+7. Parentheses
+
+  - Wrap JSX tags in parentheses when they span more than one line. eslint: [`react/jsx-wrap-multilines`](https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-wrap-multilines.md)
+
+    ```jsx
+    // bad
+    render() {
+      return <MyComponent variant="long body" foo="bar">
+               <MyChild />
+             </MyComponent>;
+    }
+
+    // good
+    render() {
+      return (
+        <MyComponent variant="long body" foo="bar">
+          <MyChild />
+        </MyComponent>
+      );
+    }
+
+    // good, when single line
+    render() {
+      const body = <div>hello</div>;
+      return <MyComponent>{body}</MyComponent>;
+    }
+    ```
+
+8.Align and sort HTML properties.
+
+Fit them all on the same line if you can. If you can't, put each property on a line of its own, indented four spaces, in sorted order. The closing angle brace should be on a line of its own, indented the same as the opening angle brace. This makes it easy to see the props at a glance.
+
+Yes:
+```jsx
+<div className="highlight" key="highlight-div">
+<div
+    className="highlight"
+    key="highlight-div"
+>
+<Image
+    className="highlight"
+    key="highlight-div"
+/>
+```
+
+No:
+```jsx
+<div className="highlight"      // property not on its own line
+     key="highlight-div"
+>
+<div                            // closing brace not on its own line
+    className="highlight"
+    key="highlight-div">
+<div                            // property is not sorted
+    key="highlight-div"
+    className="highlight"
+>
+```
+
 6. Use higher order components instead of mixins.
+
    ES6 style classes do not support mixins.  See the [mixins considered harmful](https://facebook.github.io/react/blog/2016/07/13/mixins-considered-harmful.html)
    blog post for details of how to convert mixins to higher order components.
 
 
-#### Component method and property ordering
-
-Ordering within a React component is strict. The following example
-illustrates the precise ordering of various component methods and
-properties:
+### Method ordering
+Ordering within a React component is strict. The following example illustrates the precise ordering of various component methods and properties:
 
 ```js
 class Foo extends Component {
@@ -519,7 +599,7 @@ class Foo extends Component {
 ```
 
 
-### Dealing with props
+### Props
 
 - Start your render method with a destructuring assignment on props and/or context.
 - Use the spread operator to assign multiple attributes in one go.
@@ -530,6 +610,9 @@ const { onTodoClick } = this.context;
 
 return <TodoItem {...{ label, completed, onTodoClick }} />
 ```
+
+Prefer [props to state](http://facebook.github.io/react/docs/interactivity-and-dynamic-uis.html#what-components-should-have-state). You almost always want to use props. By avoiding state when possible, you minimize redundancy, making it easier to reason about your application.
+
 - Always define explicit defaultProps for all non-required props.
 > Why? propTypes are a form of documentation, and providing defaultProps means the reader of your code doesn’t have to assume as much. In addition, it can mean that your code can omit certain type checks.
 
@@ -574,7 +657,8 @@ Notes for use:
     return <WrappedComponent {...this.props} />
   }
   ```
-  
+ 
+### Event handlers 
 #### Name handlers `handleEventName`.
 
 Example:
@@ -594,7 +678,7 @@ Example:
 <Component onLaunchMissiles={this.handleLaunchMissiles} />
 ```
 
-#### ref
+### Ref
 Always use ref callbacks. eslint: [`react/no-string-refs`](https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/no-string-refs.md)
 
     ```jsx
@@ -608,8 +692,10 @@ Always use ref callbacks. eslint: [`react/no-string-refs`](https://github.com/ya
       ref={(ref) => { this.myRef = ref; }}
     />
     ```
-    
-### During repeat
+ 
+### Disciplines
+
+#### iteration
 - Avoid using an array index as `key` prop, prefer a unique ID. ([why?](https://medium.com/@robinpokorny/index-as-a-key-is-an-anti-pattern-e0349aece318))
 
   ```jsx
@@ -630,94 +716,24 @@ Always use ref callbacks. eslint: [`react/no-string-refs`](https://github.com/ya
   ))}
   ```
 
-#### Open elements on the same line.
-
-The 80-character line limit is a bit tight, so we opt to conserve the extra 4.
-
-Yes:
-```jsx
-return <div>
-   ...
-</div>;
-```
-
-No:
-```jsx
-return (      // "div" is not on the same line as "return"
-    <div>
-        ...
-    </div>
-);
-```
-
-### Parentheses
-
-  - Wrap JSX tags in parentheses when they span more than one line. eslint: [`react/jsx-wrap-multilines`](https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-wrap-multilines.md)
-
-    ```jsx
-    // bad
-    render() {
-      return <MyComponent variant="long body" foo="bar">
-               <MyChild />
-             </MyComponent>;
-    }
-
-    // good
-    render() {
-      return (
-        <MyComponent variant="long body" foo="bar">
-          <MyChild />
-        </MyComponent>
-      );
-    }
-
-    // good, when single line
-    render() {
-      const body = <div>hello</div>;
-      return <MyComponent>{body}</MyComponent>;
-    }
-    ```
-
-#### Align and sort HTML properties.
-
-Fit them all on the same line if you can. If you can't, put each property on a line of its own, indented four spaces, in sorted order. The closing angle brace should be on a line of its own, indented the same as the opening angle brace. This makes it easy to see the props at a glance.
-
-Yes:
-```jsx
-<div className="highlight" key="highlight-div">
-<div
-    className="highlight"
-    key="highlight-div"
->
-<Image
-    className="highlight"
-    key="highlight-div"
-/>
-```
-
-No:
-```jsx
-<div className="highlight"      // property not on its own line
-     key="highlight-div"
->
-<div                            // closing brace not on its own line
-    className="highlight"
-    key="highlight-div">
-<div                            // property is not sorted
-    key="highlight-div"
-    className="highlight"
->
-```
-
 #### Only export a single react class.
 
 Every .jsx file should export a single React class, and nothing else. This is for testability; the fixture framework requires it to function.
 Note that the file can still define multiple classes, it just can't export
 more than one.
 
+
+#### `isMounted`
+
+  - Do not use `isMounted`. eslint: [`react/no-is-mounted`](https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/no-is-mounted.md)
+
+  > Why? [`isMounted` is an anti-pattern][anti-pattern], is not available when using ES6 classes, and is on its way to being officially deprecated.
+
+  [anti-pattern]: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
+
 ---------------------
 
-#### Type-checking
+### Type checking
 
 Consider Type-checking with [Flow](https://flow.org/) over PropTypes
 
@@ -779,15 +795,6 @@ children: React$Element<any> | Array<React$Element<any>>
 
 Note that this is only the most common use-case for children.
 Children can also be other types (like a string, or a function).
-
-### `isMounted`
-
-  - Do not use `isMounted`. eslint: [`react/no-is-mounted`](https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/no-is-mounted.md)
-
-  > Why? [`isMounted` is an anti-pattern][anti-pattern], is not available when using ES6 classes, and is on its way to being officially deprecated.
-
-  [anti-pattern]: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
-
 
 ## Redux
 
