@@ -44,7 +44,7 @@ preferably with links to other sources. I change my mind often (for the better),
     - [State in the DOM](#state-in-the-DOM)
     - [Iteration](#iteration)
     - [Multiple exports](#multiple-exports)
-    - [isMounted] (#is-mounted)
+    - [isMounted](#is-mounted)
   - [Type checking](#type-checking)
 - [Redux](#redux)
   - [Action creators](#action-creators)
