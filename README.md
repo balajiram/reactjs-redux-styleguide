@@ -127,13 +127,13 @@ SYMBOLIC_CONSTANTS_LIKE_THIS
 Use ES6 imports `import foo from 'foo'`. 
 use CommonJS imports if the ES6 import isn't supported by the library and use-cases like dynamically fetching image assests inside the code
 `Grouping` There should be 3 clusters of imports: third-party (aka vendor) libraries, first-party libraries, and local imports.
-React/Redux is "Third party" because we didn't write it. Astro is "First party" because it lives their own repository.
+React/Redux is "Third party" because we didn't write it. If your team owns a separate repo(`common-components`) for sharing common component with sharing other teams inside your organization then it becomes "First party", because it lives their own repository and managed by you.
 
 ```js
 import React, {Component} from "react";
 import {connect} from redux;
 
-import {Button, CheckBox} from "Astro";
+import {Button, CheckBox} from "common-components";
 
 import Util from "../common/util.js";
 import mainThing, {
