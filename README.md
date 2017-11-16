@@ -426,7 +426,7 @@ Do not use `data-` attributes or classes. All information
 should be stored in JavaScript, either in the React component itself,
 or in a React store if using a framework such as Redux.
 
-### Component Syntax
+### Component Syntax rules
 
 1. Use static properties for `defaultProps`.
 2. Use an instance property for `state`.
@@ -530,7 +530,51 @@ const { onTodoClick } = this.context;
 
 return <TodoItem {...{ label, completed, onTodoClick }} />
 ```
+- Always define explicit defaultProps for all non-required props.
+> Why? propTypes are a form of documentation, and providing defaultProps means the reader of your code doesn’t have to assume as much. In addition, it can mean that your code can omit certain type checks.
 
+  ```jsx
+  // bad
+  function SFC({ foo, bar, children }) {
+    return <div>{foo}{bar}{children}</div>;
+  }
+  SFC.propTypes = {
+    foo: PropTypes.number.isRequired,
+    bar: PropTypes.string,
+    children: PropTypes.node,
+  };
+
+  // good
+  function SFC({ foo, bar, children }) {
+    return <div>{foo}{bar}{children}</div>;
+  }
+  SFC.propTypes = {
+    foo: PropTypes.number.isRequired,
+    bar: PropTypes.string,
+    children: PropTypes.node,
+  };
+  SFC.defaultProps = {
+    bar: '',
+    children: null,
+  };
+  ```
+Notes for use:
+  Filter out unnecessary props when possible. Also, use [prop-types-exact](https://www.npmjs.com/package/prop-types-exact) to help prevent bugs.
+
+  ```jsx
+  //good
+  render() {
+    const { irrelevantProp, ...relevantProps  } = this.props;
+    return <WrappedComponent {...relevantProps} />
+  }
+
+  //bad
+  render() {
+    const { irrelevantProp, ...relevantProps  } = this.props;
+    return <WrappedComponent {...this.props} />
+  }
+  ```
+  
 #### Name handlers `handleEventName`.
 
 Example:
@@ -550,6 +594,41 @@ Example:
 <Component onLaunchMissiles={this.handleLaunchMissiles} />
 ```
 
+#### ref
+Always use ref callbacks. eslint: [`react/no-string-refs`](https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/no-string-refs.md)
+
+    ```jsx
+    // bad
+    <Foo
+      ref="myRef"
+    />
+
+    // good
+    <Foo
+      ref={(ref) => { this.myRef = ref; }}
+    />
+    ```
+    
+### During repeat
+- Avoid using an array index as `key` prop, prefer a unique ID. ([why?](https://medium.com/@robinpokorny/index-as-a-key-is-an-anti-pattern-e0349aece318))
+
+  ```jsx
+  // bad
+  {todos.map((todo, index) =>
+    <Todo
+      {...todo}
+      key={index}
+    />
+  )}
+
+  // good
+  {todos.map(todo => (
+    <Todo
+      {...todo}
+      key={todo.id}
+    />
+  ))}
+  ```
 
 #### Open elements on the same line.
 
@@ -571,13 +650,37 @@ return (      // "div" is not on the same line as "return"
 );
 ```
 
+### Parentheses
+
+  - Wrap JSX tags in parentheses when they span more than one line. eslint: [`react/jsx-wrap-multilines`](https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-wrap-multilines.md)
+
+    ```jsx
+    // bad
+    render() {
+      return <MyComponent variant="long body" foo="bar">
+               <MyChild />
+             </MyComponent>;
+    }
+
+    // good
+    render() {
+      return (
+        <MyComponent variant="long body" foo="bar">
+          <MyChild />
+        </MyComponent>
+      );
+    }
+
+    // good, when single line
+    render() {
+      const body = <div>hello</div>;
+      return <MyComponent>{body}</MyComponent>;
+    }
+    ```
+
 #### Align and sort HTML properties.
 
-Fit them all on the same line if you can. If you can't, put each
-property on a line of its own, indented four spaces, in sorted order.
-The closing angle brace should be on a line of its own, indented the
-same as the opening angle brace. This makes it easy to see the props
-at a glance.
+Fit them all on the same line if you can. If you can't, put each property on a line of its own, indented four spaces, in sorted order. The closing angle brace should be on a line of its own, indented the same as the opening angle brace. This makes it easy to see the props at a glance.
 
 Yes:
 ```jsx
@@ -676,6 +779,15 @@ children: React$Element<any> | Array<React$Element<any>>
 
 Note that this is only the most common use-case for children.
 Children can also be other types (like a string, or a function).
+
+### `isMounted`
+
+  - Do not use `isMounted`. eslint: [`react/no-is-mounted`](https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/no-is-mounted.md)
+
+  > Why? [`isMounted` is an anti-pattern][anti-pattern], is not available when using ES6 classes, and is on its way to being officially deprecated.
+
+  [anti-pattern]: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
+
 
 ## Redux
 
