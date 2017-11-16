@@ -40,6 +40,7 @@ preferably with links to other sources. I change my mind often (for the better),
   - [Props](#props)
   - [Event handlers](#event-handlers)
   - [Ref](#ref)
+  - [Annotate children](#annotate-children)
   - [Anti-patterns](#anti-patterns)
     - [State in the DOM](#state-in-the-DOM)
     - [Iteration](#iteration)
@@ -690,6 +691,20 @@ Always use ref callbacks. eslint: [`react/no-string-refs`](https://github.com/ya
       ref={(ref) => { this.myRef = ref; }}
     />
     ```
+
+### Annotate `children`
+
+`children` is something of a special prop in React. Most often,
+you'll want to pass a React element (or an array of React elements).
+
+This can be annotated like so:
+
+```js
+children: PropTypes.arrayOf(PropTypes.element) | PropTypes.element
+```
+
+Note that this is only the most common use-case for children.
+Children can also be other types (like a string, or a function).
  
 ### Anti-patterns
 
@@ -784,20 +799,6 @@ const StatelessFoo = ({numbers}: Props) => {
 };
 
 ```
-
-#### Annotate `children`
-
-`children` is something of a special prop in React. Most often,
-you'll want to pass a React element (or an array of React elements).
-
-This can be annotated like so:
-
-```js
-children: React$Element<any> | Array<React$Element<any>>
-```
-
-Note that this is only the most common use-case for children.
-Children can also be other types (like a string, or a function).
 
 ## Redux
 
