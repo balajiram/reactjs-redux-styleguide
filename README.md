@@ -392,8 +392,6 @@ side effects. That means they cannot access outside scope and they cannot mutate
 
 ## React
 
-For [React best practices](https://docs.google.com/document/d/1ChtFUao18IyNhaXZ5sE2W-CFuFcYnqlFTyi5gfe6XV0/edit).
-
 ### Components vs Containers
 
 React components come in two flavors: presentation components and container components, also known as [dumb vs smart
