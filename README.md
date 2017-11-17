@@ -809,7 +809,7 @@ const StatelessFoo = ({numbers}: Props) => {
 ### Action creators
 
 - Group related action creators in one file.
-- Use [redux-promise] for asynchronous actions, or [redux-thunk] if you need more flexibility.
+- Use [redux-promise] / [redux-thunk] for asynchronous actions, or [redux-saga] if you need more flexibility.
 - Expose each action creator as a named export.
 - Don't use a default export.
 
@@ -825,7 +825,7 @@ export function doSomething() {
 ```
 
 Action creators are functions which return an action object. An action object contains a type and optionally a payload
-and metadata. Action objects should follow the [Flux Standard Action] schema.
+and metadata. Action objects should follow the [Reux Standard Action] schema.
 
 We could also use the createAction helper of redux-actions, but other than enforcing FSA it doesn't do much here in
 terms of reducing boilerplate. In fact createAction is less readable and doesn't let us easily export named functions
@@ -838,7 +838,8 @@ guide still follows the group-by-type pattern, but may move towards using ducks 
 
 [redux-promise]: https://github.com/acdlite/redux-promise
 [redux-thunk]: https://github.com/gaearon/redux-thunk
-[Flux Standard Action]: https://github.com/acdlite/flux-standard-action
+[redux-saga]: https://github.com/redux-saga/redux-saga
+[redux Standard Action]: https://github.com/acdlite/flux-standard-action
 [redux-actions]: https://github.com/acdlite/redux-actions
 [ducks]: https://github.com/erikras/ducks-modular-redux
 [modular angularjs]: https://medium.com/opinionated-angularjs/scalable-code-organization-in-angularjs-9f01b594bf06
@@ -848,7 +849,7 @@ guide still follows the group-by-type pattern, but may move towards using ducks 
 - Expose reducers as the default export.
 - Expose handlers as named exports for unit testing.
 - Use constants instead of inline strings for action types.
-- Always define an `initialState` variable.
+- Always define an `getInitialState()` method for initial state.
 
 ```js
 // using redux-actions
@@ -857,11 +858,13 @@ guide still follows the group-by-type pattern, but may move towards using ducks 
 import { handleActions } from 'redux-actions';
 import { Todo } from '../constants/actionTypes';
 
-const initialState = {};
+const getInitialState () => {
+ ...
+};
 
 export default handleActions({
   [Todo.add]: addTodo
-}, initialState);
+}, state = getInitialState());
 
 export function addTodo(state, action) {
   return { ...state, todo: action.payload.todo };
