@@ -125,11 +125,16 @@ SYMBOLIC_CONSTANTS_LIKE_THIS
 ```
 
 ### Imports
-Use ES6 imports `import foo from 'foo'`. 
-use CommonJS imports if the ES6 import isn't supported by the library and use-cases like dynamically fetching image assests inside the code
-`Grouping` There should be 3 clusters of imports: third-party (aka vendor) libraries, first-party libraries, and local imports.
-React/Redux is "Third party" because we didn't write it. If your team owns a separate repo(`common-components`) for sharing common component with sharing other teams inside your organization then it becomes "First party", because it lives their own repository and managed by you.
+Use ES6 imports `import foo from 'foo'`and use CommonJS imports if the ES6 import isn't supported by the library / use-cases like dynamically fetching image assests inside the code`const assetUrl = isVerified ? require("../../verified.png") : require("../../non-verified.png")`.
 
+`Grouping` There should be 3 clusters of imports: 
+  -third-party (aka vendor) libraries
+    React/Redux is "Third party" because we didn't write it.
+  -first-party libraries.
+     If your team owns a separate repo(`common-components`) for sharing common component with other teams inside your organization then it becomes "First party", because it's not living inside our sorce code, but managed by us.
+  -local imports.
+     all files inside our source code repo
+     
 ```js
 import React, {Component} from "react";
 import {connect} from redux;
