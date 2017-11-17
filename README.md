@@ -740,7 +740,7 @@ Do not use `data-` attributes or classes. All information should be stored in Ja
 
 #### Multiple exports
 
-Every .jsx file should export a single React class, and nothing else. 
+Every .jsx file should export a single React class. 
 
 Note that the file can still define multiple classes, it just can't export more than one.
 
