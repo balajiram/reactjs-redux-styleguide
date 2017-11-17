@@ -24,8 +24,8 @@ preferably with links to other sources. I change my mind often (for the better),
 ## Table of Contents
 
 - [Javascript / ES6](#javascript-or-es6)
-  - [Variables: var, let and const](#variables-var-let-and-const)
-  - [Variables: declaration and usage](#variables-naming-declaration-and-usage)
+  - [var, let and const](#var-let-and-const)
+  - [declaration and usage](#naming-declaration-and-usage)
   - [Naming: files and variables](#naming-files-and-variables)
   - [Imports](#imports)
   - [Spacing and Line length](#spacing-and-line-length)
@@ -56,11 +56,12 @@ preferably with links to other sources. I change my mind often (for the better),
 
 ## Javascript / ES6
 
-Developers which have recently discovered the power of ES6 often feel compelled to use them on every occasion. This is
-very good because it keeps us upstream with the community and also at the same time it can quickly lead to unreadable code.
+Developers who have recently discovered the power of ES6 often feel compelled to use them on every occasion. This is
+very good because it keeps us upstream with the community. But at the same we should be very cautious when using new features and syntax because it can quickly lead to unreadable code. 
+
 With great power comes great responsibility.
 
-### Variables: var, let and const
+### var, let and const
 
 - `var` deprecated. There is no use case for it anymore.
 - Use `const` by default. Immutable bindings are a good starting point. Code is easier to read and comprehend because
@@ -85,7 +86,7 @@ const bar = 'bar';
 const baz = 'baz';
 ```
 
-### Variables: declaration and usage
+### declaration and usage
 - Declare variables where you use them.
 - Declare each variable as a full statement. It avoids the dangling comma discussion.
 - Separate logical chunks of code with an empty line.
