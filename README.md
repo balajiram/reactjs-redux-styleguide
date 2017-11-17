@@ -297,11 +297,11 @@ array literal.
 Object constructors don't have the same problems, but follow the same
 rule for consistency with arrays.  Plus, `{}` is more readable.
 
+#### Utility methods
+
 In some cases, we do not yet allow a new language feature, if it's
 expensive to polyfill.  In others, we require using the newer language
 feature and avoiding the old:
-
-#### Utility methods
 
 | Construct | Use...                                | ...instead of |
 | --------- | ------------------------------------- | ---------------------- |
