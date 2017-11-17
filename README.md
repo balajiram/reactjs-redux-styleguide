@@ -128,11 +128,11 @@ SYMBOLIC_CONSTANTS_LIKE_THIS
 Use ES6 imports `import foo from 'foo'`and use CommonJS imports if the ES6 import isn't supported by the library / use-cases like dynamically fetching image assests inside the code`const assetUrl = isVerified ? require("../../verified.png") : require("../../non-verified.png")`.
 
 `Grouping` There should be 3 clusters of imports:
-  - third-party (aka vendor) libraries
+  - `third-party (aka vendor) libraries.`
     React/Redux is "Third party" because we didn't write it.
-  - first-party libraries.
+  - `first-party libraries.`
      If your team owns a separate repo(`common-components`) for sharing common component with other teams inside your organization then it becomes "First party", because it's not living inside our sorce code, but managed by us.
-  - local imports.
+  - `local imports.`
      all files inside our source code repo
      
 ```js
